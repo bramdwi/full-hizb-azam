@@ -29,7 +29,8 @@
   function renderHome() {
     const chapters = BOOK.chapters;
     const dayChapters = chapters.filter((c) => c.day);
-    const frontMatter = chapters.filter((c) => !c.day && c.id !== "sampul");
+    const sholawatChapter = chapters.find((c) => c.id === "sholawat40");
+    const allChapters = [...dayChapters, sholawatChapter].filter(Boolean);
 
     const continueBlock = savedPage
       ? `<div class="continue-card" id="continueCard">
@@ -42,17 +43,7 @@
          </div>`
       : "";
 
-    const frontCards = frontMatter
-      .map(
-        (c) => `
-      <div class="day-card" data-open-chapter="${c.id}" style="grid-column:1 / -1;">
-        <div class="dc-day">${c.label}</div>
-        <div class="dc-title">${c.title}</div>
-      </div>`
-      )
-      .join("");
-
-    const dayCards = dayChapters
+    const dayCards = allChapters
       .map(
         (c) => `
       <div class="day-card" data-open-chapter="${c.id}">
@@ -68,8 +59,6 @@
         <h1>Mukhtashar Al-Hizbul A'zham &amp; Sholawat 40</h1>
       </div>
       ${continueBlock}
-      <div class="day-grid" style="margin-bottom:1.4rem;">${frontCards}</div>
-      <div class="section-h">Amalan 7 Hari</div>
       <div class="day-grid">${dayCards}</div>
     `;
   }
