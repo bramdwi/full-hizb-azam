@@ -3,7 +3,7 @@
 // so the Arabic (and everything else) shown is always the real page image.
 const BOOK = {
   title: "Mukhtashar Al-Hizbul A'zham",
-  subtitle: "& Sholawat 40 — Buku Saku Amalan Harian",
+  subtitle: "Buku Saku Amalan Harian",
   totalPages: 76,
   chapters: [
     {
