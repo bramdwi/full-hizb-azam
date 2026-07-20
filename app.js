@@ -66,10 +66,8 @@
 
     $("#home .home-scroll").innerHTML = `
       <div class="cover-card">
-        <h1>${BOOK.title}</h1>
-        <p>${BOOK.subtitle}</p>
-        <div class="cover-divider"></div>
-        <p style="font-size:.82rem;">Panduan zikir &amp; doa tujuh hari, Jumat hingga Kamis</p>
+        <p class="cover-eyebrow">Buku Saku Amalan Harian</p>
+        <h1>Mukhtashar Al-Hizbul A'zham &amp; Sholawat 40</h1>
       </div>
       ${continueBlock}
       <div class="section-h">Pembukaan</div>
