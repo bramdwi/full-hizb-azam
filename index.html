@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<title>Mukhtashar Al-Hizbul A'zham & Sholawat 40</title>
+<meta name="description" content="Buku saku digital amalan harian: sholawat, doa, dan istighfar 7 hari (Jumat–Kamis).">
+<meta name="theme-color" content="#0b3d3a">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Hizbul A'zham">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- Top bar -->
+  <div class="topbar">
+    <button class="icon-btn" id="hamburgerBtn" aria-label="Buka daftar isi">☰</button>
+    <div class="topbar-titles">
+      <p class="eyebrow" id="topbarEyebrow">Buku Saku Amalan Harian</p>
+      <h1 id="topbarTitle">Mukhtashar Al-Hizbul A'zham</h1>
+    </div>
+  </div>
+
+  <!-- Drawer / TOC -->
+  <div class="scrim" id="scrim"></div>
+  <nav class="drawer" id="drawer" aria-label="Daftar isi">
+    <div class="drawer-head">
+      <button class="icon-btn" id="closeDrawerBtn" style="position:absolute; top:calc(1rem + var(--safe-top)); right:1rem;" aria-label="Tutup">✕</button>
+      <div class="mark">۞</div>
+      <h2>Daftar Isi</h2>
+      <p>Ketuk bagian untuk membuka</p>
+    </div>
+    <div class="drawer-list" id="drawerList"></div>
+    <div class="drawer-foot">
+      <span>📲 Pasang sebagai aplikasi</span>
+      <button id="installBtn">Pasang</button>
+    </div>
+  </nav>
+
+  <!-- Views -->
+  <div class="view" id="home">
+    <div class="view-inner home-scroll"></div>
+  </div>
+
+  <div class="view" id="chapter">
+    <div class="view-inner chapter-scroll"></div>
+  </div>
+
+  <div class="view" id="reader">
+    <div class="reader-stage" id="readerStage">
+      <div class="reader-topbar">
+        <button class="icon-btn" id="readerBackBtn" aria-label="Kembali">←</button>
+        <span class="rt-title" id="readerTitle"></span>
+      </div>
+      <div class="reader-tap-zone left"></div>
+      <div class="reader-tap-zone right"></div>
+      <div class="page-track" id="pageTrack"></div>
+      <div class="reader-bottombar">
+        <span class="page-count" id="pageCount">1 / 76</span>
+        <input type="range" class="page-slider" id="pageSlider" min="1" max="76" value="1" step="1">
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom tab bar -->
+  <div class="tabbar">
+    <button class="tab-btn" data-view="home"><span class="ti">⌂</span>Beranda</button>
+    <button class="tab-btn" data-view="chapter"><span class="ti">۞</span>Bagian</button>
+    <button class="tab-btn" data-view="reader"><span class="ti">📖</span>Baca</button>
+  </div>
+
+  <div id="toast"></div>
+</div>
+
+<script>
+  // Visible failure state instead of a silent, endless "Memuat…" —
+  // shows exactly what went wrong so it's diagnosable from the phone itself.
+  function hizbShowLoadError(reason) {
+    var container = document.getElementById('app');
+    if (!container) return;
+    container.innerHTML =
+      '<div style="text-align:center;padding:5rem 1rem;font-family:system-ui,-apple-system,sans-serif;color:#efe8d6;background:#07211f;height:100dvh;display:flex;flex-direction:column;justify-content:center;align-items:center;">' +
+      '<div style="font-size:3rem;margin-bottom:1rem;color:#e2c363;">۞</div>' +
+      '<p style="font-size:1.15rem;font-weight:600;margin:0 0 .5rem;color:#faf6ec;">Gagal Memuat Aplikasi</p>' +
+      '<p style="font-size:.85rem;color:#efe8d6;max-width:320px;line-height:1.5;margin:0 0 2rem;opacity:.85;">' + reason + '</p>' +
+      '<button onclick="location.reload(true)" style="background:#c9a227;color:#07211f;border:none;border-radius:999px;padding:.7rem 1.6rem;font-size:.9rem;font-weight:600;cursor:pointer;box-shadow:0 4px 12px rgba(201,162,39,.25);">Muat Ulang</button>' +
+      '</div>';
+  }
+  window.addEventListener('error', function (e) {
+    if (typeof BOOK === 'undefined') {
+      hizbShowLoadError('File data.js atau app.js tidak berhasil dimuat dari server. Pastikan semua file (data.js, app.js, style.css) berada di folder yang sama.');
+    }
+  });
+  window.hizbLoadTimeout = setTimeout(function () {
+    if (typeof BOOK === 'undefined' || !document.querySelector('.cover-card')) {
+      hizbShowLoadError('Memuat terlalu lama — kemungkinan salah satu file (data.js / app.js / style.css) tidak ditemukan di server. Coba muat ulang, atau periksa alamat file langsung.');
+    }
+  }, 6000);
+</script>
+<script src="data.js" onerror="hizbShowLoadError('File data.js tidak ditemukan (404). Pastikan file ini ter-upload sejajar dengan index.html.')"></script>
+<script src="app.js" onerror="hizbShowLoadError('File app.js tidak ditemukan (404). Pastikan file ini ter-upload sejajar dengan index.html.')"></script>
+</body>
+</html>
