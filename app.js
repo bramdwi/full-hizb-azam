@@ -66,7 +66,6 @@
 
     $("#home .home-scroll").innerHTML = `
       <div class="cover-card">
-        <div class="cover-star">۞</div>
         <h1>${BOOK.title}</h1>
         <p>${BOOK.subtitle}</p>
         <div class="cover-divider"></div>
