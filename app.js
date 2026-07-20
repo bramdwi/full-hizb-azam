@@ -113,9 +113,10 @@
         <button class="read-btn" id="openReaderBtn">📖 Baca halaman ${chapter.start}–${chapter.end}</button>
       </div>
       ${highlights ? `<div class="section-h" style="color:var(--teal-700);">Sorotan Doa &amp; Faidah</div>${highlights}` : ""}
+      ${chapter.id !== "sampul" ? `
       <p style="font-size:.74rem; color:var(--ink-soft); text-align:center; margin-top:.4rem;">
         Teks Arab lengkap, terjemahan, dan seluruh faidah tersedia utuh pada tampilan halaman asli.
-      </p>
+      </p>` : ""}
     `;
 
     $("#openReaderBtn").addEventListener("click", () => openReader(chapter.start));
