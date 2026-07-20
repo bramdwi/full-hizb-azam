@@ -8,7 +8,9 @@
     view: "home", // home | chapter | reader
     activeChapterId: null,
     currentPage: 1,
-    zoomed: false,
+    zoomScale: 1.0,
+    panX: 0,
+    panY: 0,
   };
 
   const LAST_PAGE_KEY = "hizb-last-page";
@@ -131,7 +133,25 @@
     track().innerHTML = html;
   }
 
+  function applyZoom() {
+    state.zoomScale = Math.max(1.0, Math.min(2.5, state.zoomScale));
+    if (state.zoomScale === 1.0) {
+      state.panX = 0;
+      state.panY = 0;
+    }
+    const activeImg = $(`.page-slide[data-page="${state.currentPage}"] img`);
+    if (activeImg) {
+      activeImg.style.transform = `translate(${state.panX}px, ${state.panY}px) scale(${state.zoomScale})`;
+    }
+  }
+
   function goToPage(n, animate = true) {
+    // Reset previous image zoom transform
+    const prevImg = $(`.page-slide[data-page="${state.currentPage}"] img`);
+    if (prevImg) {
+      prevImg.style.transform = "";
+    }
+
     n = Math.max(1, Math.min(BOOK.totalPages, n));
     state.currentPage = n;
     const t = track();
@@ -144,8 +164,9 @@
     $("#readerTitle").textContent = ch.title;
     if (ch.id !== state.activeChapterId) openChapter(ch.id);
     localStorage.setItem(LAST_PAGE_KEY, String(n));
-    state.zoomed = false;
-    $$(".page-slide").forEach((el) => el.classList.remove("zoomed"));
+    state.zoomScale = 1.0;
+    state.panX = 0;
+    state.panY = 0;
   }
 
   function openReader(page) {
@@ -156,48 +177,95 @@
   function initReaderGestures() {
     const stage = $("#readerStage");
     let startX = 0, startY = 0, dragging = false, baseTranslate = 0;
+    let isPanning = false;
+    let startPanX = 0, startPanY = 0;
 
     stage.addEventListener("touchstart", (e) => {
       if (e.touches.length !== 1) return;
       startX = e.touches[0].clientX;
       startY = e.touches[0].clientY;
-      dragging = true;
-      baseTranslate = -(state.currentPage - 1) * stage.clientWidth;
-      track().style.transition = "none";
+
+      if (state.zoomScale > 1.0) {
+        isPanning = true;
+        dragging = false;
+        startPanX = state.panX;
+        startPanY = state.panY;
+        const activeImg = $(`.page-slide[data-page="${state.currentPage}"] img`);
+        if (activeImg) activeImg.style.transition = "none";
+      } else {
+        isPanning = false;
+        dragging = true;
+        baseTranslate = -(state.currentPage - 1) * stage.clientWidth;
+        track().style.transition = "none";
+      }
     }, { passive: true });
 
     stage.addEventListener("touchmove", (e) => {
-      if (!dragging) return;
       const dx = e.touches[0].clientX - startX;
       const dy = e.touches[0].clientY - startY;
-      if (Math.abs(dy) > Math.abs(dx)) return; // vertical scroll wins
-      track().style.transform = `translateX(${baseTranslate + dx}px)`;
+
+      if (isPanning) {
+        state.panX = startPanX + dx;
+        state.panY = startPanY + dy;
+        applyZoom();
+      } else if (dragging) {
+        if (Math.abs(dy) > Math.abs(dx)) return; // vertical scroll wins
+        track().style.transform = `translateX(${baseTranslate + dx}px)`;
+      }
     }, { passive: true });
 
     stage.addEventListener("touchend", (e) => {
-      if (!dragging) return;
-      dragging = false;
-      track().style.transition = "";
-      const dx = (e.changedTouches[0].clientX - startX);
-      const threshold = stage.clientWidth * 0.16;
-      if (dx < -threshold) goToPage(state.currentPage + 1);
-      else if (dx > threshold) goToPage(state.currentPage - 1);
-      else goToPage(state.currentPage);
+      if (isPanning) {
+        isPanning = false;
+        const activeImg = $(`.page-slide[data-page="${state.currentPage}"] img`);
+        if (activeImg) activeImg.style.transition = "transform 0.25s ease";
+
+        const limitX = stage.clientWidth * (state.zoomScale - 1) / 2;
+        const limitY = stage.clientHeight * (state.zoomScale - 1) / 2;
+        state.panX = Math.max(-limitX, Math.min(limitX, state.panX));
+        state.panY = Math.max(-limitY, Math.min(limitY, state.panY));
+        applyZoom();
+      } else if (dragging) {
+        dragging = false;
+        track().style.transition = "";
+        const dx = (e.changedTouches[0].clientX - startX);
+        const threshold = stage.clientWidth * 0.16;
+        if (dx < -threshold) goToPage(state.currentPage + 1);
+        else if (dx > threshold) goToPage(state.currentPage - 1);
+        else goToPage(state.currentPage);
+      }
     });
 
-    $(".reader-tap-zone.left").addEventListener("click", () => goToPage(state.currentPage - 1));
-    $(".reader-tap-zone.right").addEventListener("click", () => goToPage(state.currentPage + 1));
+    $(".reader-tap-zone.left").addEventListener("click", () => {
+      if (state.zoomScale > 1.0) return; // Prevent tap navigation when zoomed
+      goToPage(state.currentPage - 1);
+    });
+    $(".reader-tap-zone.right").addEventListener("click", () => {
+      if (state.zoomScale > 1.0) return; // Prevent tap navigation when zoomed
+      goToPage(state.currentPage + 1);
+    });
 
     // Double-tap to zoom
     let lastTap = 0;
     stage.addEventListener("click", (e) => {
+      if (e.target.closest(".icon-btn") || e.target.closest(".page-slider") || e.target.closest(".reader-topbar") || e.target.closest(".reader-bottombar")) return;
+
       const now = Date.now();
       if (now - lastTap < 300) {
-        const slide = $$(".page-slide")[state.currentPage - 1];
-        state.zoomed = !state.zoomed;
-        slide.classList.toggle("zoomed", state.zoomed);
+        state.zoomScale = state.zoomScale > 1.0 ? 1.0 : 1.9;
+        applyZoom();
       }
       lastTap = now;
+    });
+
+    $("#zoomInBtn").addEventListener("click", () => {
+      state.zoomScale += 0.25;
+      applyZoom();
+    });
+
+    $("#zoomOutBtn").addEventListener("click", () => {
+      state.zoomScale -= 0.25;
+      applyZoom();
     });
 
     $("#pageSlider").addEventListener("input", (e) => goToPage(parseInt(e.target.value, 10), false));
