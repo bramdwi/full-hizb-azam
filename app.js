@@ -68,7 +68,6 @@
         <h1>Mukhtashar Al-Hizbul A'zham &amp; Sholawat 40</h1>
       </div>
       ${continueBlock}
-      <div class="section-h">Pembukaan</div>
       <div class="day-grid" style="margin-bottom:1.4rem;">${frontCards}</div>
       <div class="section-h">Amalan 7 Hari</div>
       <div class="day-grid">${dayCards}</div>
