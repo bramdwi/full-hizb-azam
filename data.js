@@ -18,7 +18,7 @@ const BOOK = {
     {
       id: "sholawat40",
       label: "Sholawat 40",
-      title: "Sholawat 40 & Lafal Salam",
+      title: "Sholawat 40",
       day: null,
       start: 2, end: 15,
       note: "Empat puluh sholawat pilihan beserta lafal tasyahhud (salam), lengkap dengan sanad dan faidah keutamaannya.",
