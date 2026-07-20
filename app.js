@@ -80,6 +80,7 @@
   // ---------------- Rendering: Drawer TOC ----------------
   function renderDrawer() {
     const html = BOOK.chapters
+      .filter((c) => c.id !== "sampul")
       .map((c, i) => {
         const active = c.id === state.activeChapterId ? "active" : "";
         return `
@@ -87,7 +88,6 @@
           <span class="num">${c.day ? c.day.slice(0, 2) : "—"}</span>
           <span class="txt">
             <span class="t1">${c.title}</span>
-            <span class="t2">Halaman ${c.start === c.end ? c.start : c.start + "–" + c.end}</span>
           </span>
         </button>`;
       })
