@@ -101,7 +101,7 @@ const BOOK = {
       highlights: [
         {
           h: "Doa Nabi Adam 'Alaihis Salam",
-          body: "Diilhamkan Allah ke hati Nabi Adam setelah shalat dua rakaat di Kakbah: memohon diterimanya uzur, dipenuhinya kebutuhan, dan diampuninya dosa. Allah berjanji mengabulkannya bagi siapa saja yang membacanya."
+          body: "Diilhamkan Allah ke hati Nabi Adam setelah shalat dua rakaat di Ka'bah: memohon diterimanya uzur, dipenuhinya kebutuhan, dan diampuninya dosa. Allah berjanji mengabulkannya bagi siapa saja yang membacanya."
         },
         {
           h: "Doa pelunasan utang",
