@@ -29,7 +29,7 @@
   function renderHome() {
     const chapters = BOOK.chapters;
     const dayChapters = chapters.filter((c) => c.day);
-    const frontMatter = chapters.filter((c) => !c.day);
+    const frontMatter = chapters.filter((c) => !c.day && c.id !== "sampul");
 
     const continueBlock = savedPage
       ? `<div class="continue-card" id="continueCard">
@@ -48,7 +48,6 @@
       <div class="day-card" data-open-chapter="${c.id}" style="grid-column:1 / -1;">
         <div class="dc-day">${c.label}</div>
         <div class="dc-title">${c.title}</div>
-        <div class="dc-pages">Hal. ${c.start === c.end ? c.start : c.start + "–" + c.end}</div>
       </div>`
       )
       .join("");
@@ -59,7 +58,6 @@
       <div class="day-card" data-open-chapter="${c.id}">
         <div class="dc-day">${c.label}</div>
         <div class="dc-title">${c.title.replace(/^Hizb [A-Za-z]+ — /, "")}</div>
-        <div class="dc-pages">Hal. ${c.start}–${c.end}</div>
       </div>`
       )
       .join("");

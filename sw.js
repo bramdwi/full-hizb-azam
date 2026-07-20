@@ -1,4 +1,4 @@
-const CACHE_NAME = "hizbul-azham-v1";
+const CACHE_NAME = "hizbul-azham-v2";
 const CORE_ASSETS = [
   "./",
   "./index.html",
